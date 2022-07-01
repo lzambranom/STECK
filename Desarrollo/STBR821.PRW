@@ -8,6 +8,9 @@ Static lFWCodFil := FindFunction("FWCodFil")
 Static lCtbIsCube := FindFunction("CtbIsCube")
 Static lIsRedStor := FindFunction("IsRedStor") .and. IsRedStor() //Used to check if the Red Storn Concept used in russia is active in the system | Usada para verificar se o Conceito Red Storn utilizado na Russia esta ativo no sistema | Se usa para verificar si el concepto de Red Storn utilizado en Rusia esta activo en el sistema
 
+// Manejo de entidad 05
+Static lEntidad05 := (cPaisLoc $ "COL|PER" .And. CtbMovSaldo("CT0",,"05") .And. FWAliasInDic("QL6") .And. FWAliasInDic("QL7"))
+
 //amarracao
 
 /*
@@ -814,6 +817,8 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 		oReport:NoUserFilter()
 
 	Endif
+    
+	cNormal = cArqTmp->NORMAL  //m&h
 
 	If nOrden = 2
 		oBrkConta 	:= TRBreak():New( oSection2, { || cArqTmp->NIT }, OemToAnsi(STR0030), ) //"Total NIT"
@@ -823,7 +828,7 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 		oTotCred	:= TRFunction():New( oSection2:Cell("CLANCCRD")	, ,"ONPRINT", oBrkConta,/*Titulo*/,cPicture,;
 			{ || ValorCTB(nTotCrd  ,,,TAM_VALOR,nDecimais,.F.,cPicture,"2",,,,,,lPrintZero,.F.) },.F.,.F.,.F.,oSection2)
 		oTotTpSld 	:= TRFunction():New( oSection2:Cell("CTPSLDATU")	, ,"ONPRINT", oBrkConta,/*Titulo*/,cPicture,;
-			{ || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.F.,cPicture,cNormal,,,,,,lPrintZero,.F.) },.F.,.F.,.F.,oSection2) // MH
+			{ || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) },.F.,.F.,.F.,oSection2) // MH
 			//{ || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cNormal,,,,,,lPrintZero,.F.) },.F.,.F.,.F.,oSection2)
 	Else
 		oBrkConta 	:= TRBreak():New( oSection2, { || cArqTmp->CONTA }, OemToAnsi(STR0031), ) //"Total Cuenta"
@@ -833,7 +838,7 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 		oTotCred	:= TRFunction():New( oSection2:Cell("CLANCCRD")	, ,"ONPRINT", oBrkConta,/*Titulo*/,cPicture,;
 			{ || ValorCTB(nTotCrd  ,,,TAM_VALOR,nDecimais,.F.,cPicture,"2",,,,,,lPrintZero,.F.) },.F.,.F.,.F.,oSection2)
 		oTotTpSld 	:= TRFunction():New( oSection2:Cell("CTPSLDATU")	, ,"ONPRINT", oBrkConta,/*Titulo*/,cPicture,;
-		{ || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.F.,cPicture,cNormal,,,,,,lPrintZero,.F.) },.F.,.F.,.F.,oSection2) //MH
+		{ || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) },.F.,.F.,.F.,oSection2) //MH
 		//{ || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cNormal,,,,,,lPrintZero,.F.) },.F.,.F.,.F.,oSection2) 
 	EndIf
 
@@ -857,11 +862,11 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 	If nOrden = 2
 		//oSection1_1:Cell("SALDOANT"):SetBlock( {|| STR0033 + ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cNormal,,,,,,lPrintZero,.F.) } )	//"SALDO ANTERIOR: "	
 		//oSection1_1:Cell("SALDOANT"):SetBlock( {|| ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cNormal,,,,,,lPrintZero,.F.) } ) //"SALDO ANTERIOR: "	
-	    oSection1_1:Cell("SALDOANT"):SetBlock( {|| ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.F.,cPicture,cNormal,,,,,,lPrintZero,.F.) } ) //"SALDO ANTERIOR: "	// MH SE MOFICO NSIGNAL
+	    oSection1_1:Cell("SALDOANT"):SetBlock( {|| ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) } ) //"SALDO ANTERIOR: "	// MH SE MOFICO NSIGNAL
 	Else
 		//oSection1_1:Cell("SALDOANT"):SetBlock( {|| STR0033 + ValorCTB(aSaldoAnt[6],,,TAM_VALOR+2,nDecimais,.T.,cPicture,cNormal,,,,,,lPrintZero,.F.) } )	//"SALDO ANTERIOR: "
 		//oSection1_1:Cell("SALDOANT"):SetBlock( {|| ValorCTB(aSaldoAnt[6],,,TAM_VALOR+2,nDecimais,.T.,cPicture,cNormal,,,,,,lPrintZero,.F.) } )	//"SALDO ANTERIOR: "  
-		oSection1_1:Cell("SALDOANT"):SetBlock( {|| ValorCTB(aSaldoAnt[6],,,TAM_VALOR+2,nDecimais,.F.,cPicture,cNormal,,,,,,lPrintZero,.F.) } )	//"SALDO ANTERIOR: "  // MH SE MOFICO NSIGNAL
+		oSection1_1:Cell("SALDOANT"):SetBlock( {|| ValorCTB(aSaldoAnt[6],,,TAM_VALOR+2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) } )	//"SALDO ANTERIOR: "  // MH SE MOFICO NSIGNAL
 	EndIF
 	
 
@@ -940,7 +945,7 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 
 				oSection3:Cell("CTRANSP"):SetValue( { || Iif(nLinReport == 11,  STR0037, STR0037)}) //"Transporte"
 				//oSection3:Cell("CSLDATU"):SetBlock( { || ValorCTB(nSldTransp,,,TAM_VALOR-2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,,,,,,lPrintZero,.F.) })
-				oSection3:Cell("CSLDATU"):SetBlock( { || ValorCTB(nSldTransp,,,TAM_VALOR-2,nDecimais,.F.,cPicture,cArqTmp->NORMAL,,,,,,lPrintZero,.F.) })  // MH
+				oSection3:Cell("CSLDATU"):SetBlock( { || ValorCTB(nSldTransp,,,TAM_VALOR-2,nDecimais,.F.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) })  // MH
 
 				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 				//³Inicio de Impresion de 1a SECCION³
@@ -1072,7 +1077,7 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 						Endif
 
 						//oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR-2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,,,,,,lPrintZero,.F.) } )
-						oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR-2,nDecimais,.F.,cPicture,cArqTmp->NORMAL,,,,,,lPrintZero,.F.) } )  //MH
+						oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR-2,nDecimais,.F.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) } )  //MH
 						nLin := 1
 						oSection2:PrintLine()
 
@@ -1100,7 +1105,7 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 						nSaldoAtu	:= nSaldoAtu - nVlrDeb + nVlrCrd
 						oSection2:Cell("CLANCDEB"):SetBlock( { || ValorCTB(nVlrDeb,,,TAM_VALOR,nDecimais,.F.,cPicture,"1",,,,,,lPrintZero,.F.) })// Debito
 						oSection2:Cell("CLANCCRD"):SetBlock( { || ValorCTB(nVlrCrd,,,TAM_VALOR,nDecimais,.F.,cPicture,"2",,,,,,lPrintZero,.F.) })// Credito
-						oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.F.,cPicture,cArqTmp->NORMAL,,,,,,lPrintZero,.F.) })// Senala saldo actual => Consulta Razon  // MH
+						oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.F.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) })// Senala saldo actual => Consulta Razon  // MH
 						//oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,,,,,,lPrintZero,.F.) })// Senala saldo actual => Consulta Razon
 
 						//	Imprime Section(1) - Resumida.
@@ -2855,8 +2860,8 @@ Local cImpSaldo := ""
 Local cPicAux	:= ""
 Local lDifZero	:= .T.
 Local lInformada:= .T.
-//Local cCharSinal:= ""
-Local cCharSinal:= .T.
+Local cCharSinal:= ""
+//Local cCharSinal:= .T.
 
 
 Local lRedStorn	:= cPaisLoc == "RUS" .And. SuperGetMV("MV_REDSTOR",.F.,.F.) // CAZARINI - 20/06/2017 - Parameter to activate Red Storn
@@ -2871,6 +2876,13 @@ If !lPrintZero
 		lDifZero := .F.			// O saldo nao eh diferente de zero
 	EndIf
 EndIf
+
+/*
+
+SELECT CT1_NORMAL FROM CT1090 WHERE CT1_CONTA = cConta
+cTipo 
+*/
+
 
 //ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 //³ Tipo D -> Default (D/C)												  ³

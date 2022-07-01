@@ -7,9 +7,15 @@
 			"name": "Depuración de lenguaje TOTVS",
 			"program": "${command:AskForProgramName}",
 			"cwb": "${workspaceFolder}",
-			"smartclientBin": "../totvs/bin/smartclient/smartclient.exe",
+			"smartclientBin": "c:/Totvs/Steck/Pruebas/smartclient.exe",
 			"isMultiSession": true,
 			"enableTableSync": true
 		}
-	]
+	],
+	"lastPrograms": [
+		{
+			"label": "sigamdi"
+		}
+	],
+	"lastProgramExecuted": "sigamdi"
 }

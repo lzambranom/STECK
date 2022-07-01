@@ -910,7 +910,8 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 						aSaldo	:= SaldoCT7Fil(cArqTmp->CONTA,cArqTmp->DATAL,cMoeda,cSaldo,,,,aSelFil)
 						aAdd(aTmpSal, {cArqTmp->CONTA+DToS(cArqTmp->DATAL)+cMoeda+cSaldo,aSaldo})
 					EndIf
-					aSaldoAnt	:= SaldoCT7Fil(cArqTmp->CONTA,dDataIni,cMoeda,cSaldo,"CTBR821",,,aSelFil)
+					//aSaldoAnt	:= SaldoCT7Fil(cArqTmp->CONTA,dDataIni,cMoeda,cSaldo,"CTBR821",,,aSelFil)
+					aSaldoAnt	:= SaldoCT7Fil(cArqTmp->CONTA,dDataIni,cMoeda,cSaldo,"STBR821a",,,aSelFil)
 				EndIf
 
 				If CTBR821Fil(lNoMov,aSaldo,dDataIni,dDataFim)
@@ -1504,7 +1505,8 @@ User Function STBR821NIT(oMeter,oText,oDlg,lEnd,cArqTmp,cContaIni,cContaFim,cCus
 	Default lSldAnt	:= .F.
 	Default aSelFil	:= {}
 
-	If cTipo == "1" .And. FunName() == 'CTBR821' .And. TCGetDb() $ "MSSQL7/MSSQL"
+	//If cTipo == "1" .And. FunName() == 'CTBR821' .And. TCGetDb() $ "MSSQL7/MSSQL"
+	If cTipo == "1" .And. FunName() == 'STBR821a' .And. TCGetDb() $ "MSSQL7/MSSQL"
 		DEFAULT cUFilter	:= ".T."
 	Else
 		Default cUFilter	:= ""
@@ -1518,8 +1520,8 @@ User Function STBR821NIT(oMeter,oText,oDlg,lEnd,cArqTmp,cContaIni,cContaFim,cCus
 	aCampos :={{ "CONTA"		, "C", aTamConta[1]	, 0				},;	// Codigo da Conta
 				{ "XPARTIDA"	, "C", aTamConta[1]	, 0				},;	// Contra Partida
 				{ "TIPO"		, "C", 01				, 0				},;	// Tipo do Registro (Debito/Credito/Continuacao)
-				{ "LANCDEB"	, "N", aTamVal[1]+2	, nDecimais	},;	// Debito
-				{ "LANCCRD"	, "N", aTamVal[1]+2	, nDecimais	},;	// Credito
+				{ "LANCDEB"	    , "N", aTamVal[1]+2	, nDecimais	},;	// Debito
+				{ "LANCCRD"	    , "N", aTamVal[1]+2	, nDecimais	},;	// Credito
 				{ "SALDOSCR"	, "N", aTamVal[1]+2	, nDecimais	},;	// Saldo
 				{ "TPSLDANT"	, "C", 01				, 0				},;	// Sinal do Saldo Anterior => Consulta Razao
 				{ "TPSLDATU"	, "C", 01				, 0				},;	// Sinal do Saldo Atual => Consulta Razao
@@ -1527,14 +1529,14 @@ User Function STBR821NIT(oMeter,oText,oDlg,lEnd,cArqTmp,cContaIni,cContaFim,cCus
 				{ "CCUSTO"		, "C", aTamCusto[1]	, 0				},;	// Centro de Custo
 				{ "ITEM"		, "C", nTamItem		, 0				},;	// Item Contabil
 				{ "SLDNIT"		, "N", aTamVal[1]+2	, nDecimais			, 0				},;	// Saldo Nit
-				{ "NIT"		, "C", nTamNit		, 0				},;	// Classe de Valor
+				{ "NIT"		    , "C", nTamNit		, 0				},;	// Classe de Valor
 				{ "DATAL"		, "D", 10				, 0				},;	// Data do Lancamento
 				{ "LOTE" 		, "C", 06				, 0				},;	// Lote
 				{ "SUBLOTE" 	, "C", 03				, 0				},;	// Sub-Lote
 				{ "DOC" 		, "C", 06				, 0				},;	// Documento
 				{ "LINHA"		, "C", 03				, 0				},;	// Linha
 				{ "SEQLAN"		, "C", 03				, 0				},;	// Sequencia do Lancamento
-				{ "SEQHIST"	, "C", 03				, 0				},;	// Seq do Historico
+				{ "SEQHIST"	   , "C", 03				, 0				},;	// Seq do Historico
 				{ "EMPORI"		, "C", 02				, 0				},;	// Empresa Original
 				{ "FILORI"		, "C", nTamFilial		, 0				},;	// Filial Original
 				{ "NOMOV"		, "L", 01				, 0				},;	// Conta Sem Movimento
@@ -1545,7 +1547,7 @@ User Function STBR821NIT(oMeter,oText,oDlg,lEnd,cArqTmp,cContaIni,cContaFim,cCus
 				{ "NORMAL"      , "C", nTamNorm         , 0             }} // Normal
 
 
-	If ! Empty(c2Moeda)
+	If !Empty(c2Moeda)
 		Aadd(aCampos, { "LANCDEB_1"	, "N", aTamVal[1]+2, nDecimais }) // Debito
 		Aadd(aCampos, { "LANCCRD_1"	, "N", aTamVal[1]+2, nDecimais }) // Credito
 		Aadd(aCampos, { "TXDEBITO"	, "N", aTamVal[1]+2, 6 }) // Taxa Debito
@@ -1615,7 +1617,8 @@ User Function STBR821NIT(oMeter,oText,oDlg,lEnd,cArqTmp,cContaIni,cContaFim,cCus
 
 	//CT2->(dbGotop())
 
-		If cTipo == "1" .And. FunName() == 'CTBR821' .And. TCGetDb() $ "MSSQL7/MSSQL"
+		//If cTipo == "1" .And. FunName() == 'CTBR821' .And. TCGetDb() $ "MSSQL7/MSSQL"
+		If cTipo == "1" .And. FunName() == 'STBR821a' .And. TCGetDb() $ "MSSQL7/MSSQL"
 			U_STBR821Qry(oMeter,oText,oDlg,lEnd,cContaIni,cContaFim,cCustoIni,cCustoFim,;
 				cItemIni,cItemFim,cNitIni,cNitFim,cMoeda,dDataIni,dDataFim,;
 				aSetOfBook,lNoMov,cSaldo,lJunta,cTipo,c2Moeda,cUFilter,lSldAnt,aSelFil)
@@ -2458,8 +2461,8 @@ User Function STBR821Qry(oMeter,oText,oDlg,lEnd,cContaIni,cContaFim,cCustoIni,cC
 				Replace DATAL		With cArqCT2->DDATA
 				Replace TIPO		With cArqCT2->DC
 				Replace LOTE		With cArqCT2->LOTE
-				Replace SUBLOTE	With cArqCT2->SUBLOTE
-				Replace DOC		With cArqCT2->DOC
+				Replace SUBLOTE	    With cArqCT2->SUBLOTE
+				Replace DOC		    With cArqCT2->DOC
 				Replace LINHA		With cArqCT2->LINHA
 				Replace CONTA		With cArqCT2->CONTA
 				DESCTA := cArqCT2->DESCTA
@@ -2845,14 +2848,16 @@ Return cDesc
 ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 /*/
-Static Function ValorCtb(nSaldo,nLin,nCol,nTamanho,nDecimais,lSinal,cPicture,cTipo,cConta,lGraf,oPrint,cTipoSinal, cIdentifi,lPrintZero,lSay,lColDbCr,lCharSinal,lPlanilha)
- 
+Static Function ValorCtb(nSaldo          ,nLin,nCol,nTamanho   ,nDecimais,lSinal,cPicture,cTipo,cConta,lGraf,oPrint,cTipoSinal, cIdentifi,lPrintZero,lSay,lColDbCr,lCharSinal,lPlanilha)
+ //             valorCTB(cArqTmp->LANCDEB,    ,    ,TAM_VALOR+8,nDecimais,  .F. ,cPicture,"1",,,,,,lPrintZero,.F.) },/*"RIGHT"*/,,"CENTER",,,.F.)	// "DEBITO"
 Local aSaveArea	:= GetArea()
 Local cImpSaldo := ""
 Local cPicAux	:= ""
 Local lDifZero	:= .T.
 Local lInformada:= .T.
-Local cCharSinal:= ""l
+//Local cCharSinal:= ""
+Local cCharSinal:= .T.
+
 
 Local lRedStorn	:= cPaisLoc == "RUS" .And. SuperGetMV("MV_REDSTOR",.F.,.F.) // CAZARINI - 20/06/2017 - Parameter to activate Red Storn
 
@@ -2875,7 +2880,8 @@ EndIf
 //³ Tipo N -> Imprime saldo com sinal (-) se o saldo for credor³
 //³ Tipo R -> Default Red Storno: Imprime natureza da conta  (C/D) e saldo relativo a ela	     ³
 //ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
-DEFAULT cTipoSinal := SuperGetMV("MV_TPVALOR")       // Assume valor default
+//DEFAULT cTipoSinal := SuperGetMV("MV_TPVALOR")       // Assume valor default
+DEFAULT cTipoSinal := 'S'
 
 DEFAULT lSay := .T.
 
@@ -2944,8 +2950,8 @@ EndIf
 //³* O tipo de Sinal "S" - Sinal, imprimira valores de saldo in- ³
 //³  vertidos da condicao normal da conta com sinal - 			  ³
 //³EXEMPLOS  -  EXEMPLOS  -  EXEMPLOS	-	EXEMPLOS  - EXEMPLOS   ³
-//³Cond Normal 	Saldo 	Default      Sinal   Parenteses		  ³
-//³	D			   -1000	   1000 D 		 1000		 1000			  	  ³
+//³Cond Normal  	Saldo 	Default      Sinal   Parenteses	      ³
+//³	D			    -1000	1000 D 		 1000	 1000			  ³
 //³	D				 1000 	1000 C		-1000 	(1000)			  ³
 //³	C				-1000 	1000 D		-1000 	(1000)			  ³
 //³	C				 1000 	1000 C		 1000 	 1000 			  ³
@@ -3351,3 +3357,938 @@ If !lSay
 EndIf
 
 Return
+
+//-------------------------------------------------------------------
+/*{Protheus.doc} SaldoCT7Fil
+Saldo do Plano de Contas por filial
+
+Redirecionada para a rotina SaldoCQFil
+
+@author Alvaro Camillo Neto
+
+@version P12
+@since   20/02/2014
+@return  Nil
+@obs
+*/
+//-------------------------------------------------------------------
+
+Static Function SaldoCT7Fil(cConta,dData,cMoeda,cTpSald,cRotina,lImpAntLP,dDataLP,aSelFil,cArqCt7,lTodasFil)
+Local aRet := {}
+
+aRet := SaldoCQFil("CT1",@cConta,/*cCCusto*/,/*cItem*/,/*cClasse*/,/*cIdent*/,@dData,@cMoeda,@cTpSald,@cRotina,@lImpAntLP,@dDataLP,@aSelFil,@lTodasFil)
+
+Return aRet
+
+//-------------------------------------------------------------------
+/*{Protheus.doc} SaldoCQFil
+Saldo da entidade por filial 
+
+@author Alvaro Camillo Neto
+
+@param cArqBase 	Arquivo Base para o saldo ( CT1 - Conta , CTT - Centro de Custo, CTD - Item Contábil , CTH - Classe de Valor, CTU - Saldo por entidade )
+@param cConta 	Conta Contábil
+@param cCCusto 	Centro de Custo
+@param cItem 		Item contábil
+@param cClasse 	Classe Contábil
+@param cIdent 	Identificador da Tabela
+@param dData 		Data do Saldo
+@param cMoeda		Moeda                                            
+@param cTpSald 	Tipo de Saldo                       
+@param cRotina 	Rotina de processamento			           
+@param lImpAntLP 	Flag para indicar se imprime antes do Lucro/Perdas
+@param dDataLP 	Data de Lucro/Perdas                      
+@param aSelFil 	Array de Filial		
+@param lTodasFil 	Flag para saber se será retornado o saldo de todas as filiais.	
+   
+@version P12
+@since   20/02/2014
+@return  Nil
+@obs	 
+*/
+//-------------------------------------------------------------------
+
+Static Function SaldoCQFil(cArqBase,cConta,cCCusto,cItem,cClasse,cIdent,dData,cMoeda,cTpSald,cRotina,lImpAntLP,dDataLP,aSelFil,lTodasFil)
+Local aSaveAnt		:= GetArea()
+Local aSaldo			:= {}
+Local nSaldoAtu		:= 0
+Local nDebito 		:= 0
+Local nCredito 		:= 0
+Local nAtuDeb 		:= 0
+Local nAtuCrd 		:= 0
+Local nSaldoAnt		:= 0
+Local nAntDeb 		:= 0
+Local nAntCrd 		:= 0
+Local cQuery			:= ""
+Local cArquivo		:= ""
+Local cCampoFil		:= ""
+Local cCodigo			:= ""
+
+Local cFilAux
+Local cCQTmpFil
+
+DEFAULT aSelFil		:= {} 
+DEFAULT lTodasFil		:= .F.
+
+DEFAULT cConta		:= ""
+DEFAULT cCCusto		:= ""
+DEFAULT cItem			:= ""
+DEFAULT cClasse		:= ""
+DEFAULT cIdent		:= ""
+
+If cArqBase == "CT1"
+	dbSelectArea("CQ0")
+	dbSelectArea("CQ1")
+	cArquivo := "CQ0"
+ElseIf cArqBase == "CTT"
+	dbSelectArea("CQ2")
+	dbSelectArea("CQ3")
+	cArquivo := "CQ2"
+	
+ElseIf cArqBase == "CTD"
+	dbSelectArea("CQ4")
+	dbSelectArea("CQ5")
+	cArquivo := "CQ4"
+	
+ElseIf cArqBase == "CTH"
+	dbSelectArea("CQ6")
+	dbSelectArea("CQ7")
+	cArquivo := "CQ6"
+	
+ElseIf cArqBase == "CTU"
+	dbSelectArea("CQ7")
+	dbSelectArea("CQ8")
+	cArquivo := "CQ8"
+EndIf
+
+If cIdent == "CTT"
+	cCodigo := cCCusto	
+ElseIf cIdent == "CTD"
+	cCodigo := cItem	
+ElseIf cIdent == "CTH"
+	cCodigo := cClasse
+EndIf
+
+If Empty(xFilial(cArquivo)) .Or. Len(aSelFil) <= 1  
+	cFilAux	:= IIF( Len(aSelFil) == 1, aSelFil[1] , Nil)
+	cFilEsp	:= xFilial(cArquivo,cFilAux)	
+	RETURN SaldoCQ(@cArqBase,@cConta,@cCCusto,@cItem,@cClasse,@cIdent,@dData,@cMoeda,@cTpSald,@cRotina,@lImpAntLP,@dDataLP,@cFilEsp)
+EndIf
+
+// Tratativa para o filtro de filiais 
+
+cCampoFil := cArquivo+"_FILIAL"
+          
+cQuery := "SELECT "+cArquivo+"."+cCampoFil
+cQuery += " FROM " + RetSqlName( cArquivo ) + " " + cArquivo
+cQuery += " WHERE "
+
+cQuery += " D_E_L_E_T_  = ' ' "
+
+If cArqBase != "CTU"
+
+	cQuery += " AND "+cArquivo+"_CONTA = '" + cConta  + "'"
+
+	If cArqBase $ "CTT/CTD/CTH"
+		cQuery += " AND "+cArquivo+"_CCUSTO = '" + cCCusto  + "'"
+	EndIf
+
+	If cArqBase $ "CTD/CTH"
+		cQuery += " AND "+cArquivo+"_ITEM = '" + cItem  + "'"
+	EndIf
+	
+	If cArqBase $ "CTH"
+		cQuery += " AND "+cArquivo+"_CLVL = '" + cClasse  + "'"
+	EndIf
+	
+Else
+	cQuery += " AND "+cArquivo+"_IDENT = '" + cIdent  + "'"
+	cQuery += " AND "+cArquivo+"_CODIGO = '" + cCodigo  + "'"
+EndIf
+
+cQuery += " AND "+cArquivo+"_MOEDA   = '" + cMoeda  + "'"
+cQuery += " AND "+cArquivo+"_TPSALD  = '" + cTpSald + "'"
+
+If !lTodasFil
+	cQryFil := " " + cCampoFil + " " + GetRngFil( aSelFil ,cArquivo, .T., @cCQTmpFil)
+	cQuery += " AND " + cQryFil
+Endif
+ 
+cQuery += " GROUP BY " + cCampoFil
+
+//	konstantin.cherchik 03/15/2018	added cPaisLoc for optimization research 
+if cPaisLoc != "RUS"
+	cQuery := ChangeQuery(cQuery)
+endif
+
+dbUseArea(.T.,"TOPCONN",TcGenQry(,,cQuery),"FILCQ",.T.,.F.)
+
+// efetuo a recuperação do saldo por filial
+While FILCQ->( !Eof() )
+
+	aSaldo := SaldoCQ(@cArqBase,@cConta,@cCCusto,@cItem,@cClasse,@cIdent,@dData,@cMoeda,@cTpSald,@cRotina,@lImpAntLP,@dDataLP,FILCQ->&(cCampoFil))
+
+	nSaldoAtu	+= aSaldo[1]
+	nDebito 	+= aSaldo[2]
+	nCredito 	+= aSaldo[3]
+	nAtuDeb 	+= aSaldo[4]
+	nAtuCrd 	+= aSaldo[5]
+	nSaldoAnt	+= aSaldo[6]
+	nAntDeb 	+= aSaldo[7]
+	nAntCrd	+= aSaldo[8]
+	
+	FILCQ->( DbSkip() )
+End
+
+dbSelectArea("FILCQ")
+FILCQ->( dbCloseArea() )
+
+CtbTmpErase(cCQTmpFil)
+
+RestArea(aSaveAnt)
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Retorno:                                             ³
+//³ [1] Saldo Atual (com sinal)                          ³
+//³ [2] Debito na Data                                   ³
+//³ [3] Credito na Data                                  ³
+//³ [4] Saldo Atual Devedor                              ³
+//³ [5] Saldo Atual Credor                               ³
+//³ [6] Saldo Anterior (com sinal)                       ³
+//³ [7] Saldo Anterior Devedor                           ³
+//³ [8] Saldo Anterior Credor                            ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+//      [1]       [2]     [3]      [4]     [5]     [6]       [7]     [8]
+Return {nSaldoAtu,nDebito,nCredito,nAtuDeb,nAtuCrd,nSaldoAnt,nAntDeb,nAntCrd}
+
+Static Function SaldoCQ(cArqBase,cConta,cCCusto,cItem,cClasse,cIdent,dData,cMoeda,cTpSald,cRotina,lImpAntLP,dDataLP,cFilEsp,lUltDtVl,cEnt05)
+
+Local nSaldoAtu	:= 0
+Local nDebito		:= 0
+Local nCredito	:= 0
+Local nAtuDeb		:= 0
+Local nAtuCrd		:= 0
+Local nSaldoAnt	:= 0
+Local nAntDeb		:= 0
+Local nAntCrd		:= 0
+Local cQuery		:= ""
+Local cTabMes		:= ""
+Local cTabDia		:= ""
+Local cFilMes		:= ""
+Local cFilDia		:= ""
+Local cCodigo		:= ""
+Local cCpoTot		:= ""
+Local cCpoDia		:= ""
+Local cCpoMes		:= ""
+Local cGrpDia		:= ""
+Local cGrpMes		:= ""
+Local aTamVlr		:= TamSX3("CT2_VALOR")
+Local aArea		:= GetArea()
+Local nDebLP		:= 0
+Local nCrdLP		:= 0
+Local cTRB			:= GetNextAlias()
+Local dDataNew    := CTOD("")
+Local cBanco	:= TcGetDb()
+Local cNulo		:= ""
+
+DEFAULT cFilEsp	:= xFilial("CT2")
+
+DEFAULT cConta 		:= Nil
+DEFAULT cCCusto		:= Nil
+DEFAULT cItem			:= Nil
+DEFAULT cClasse		:= Nil
+DEFAULT cIdent		:= ""
+DEFAULT dData			:= STOD("")
+DEFAULT lImpAntLP    := .F.
+DEFAULT dDataLP		:= STOD("")
+DEFAULT cTpSald		:= "1"
+DEFAULT cRotina		:= ""
+DEFAULT lUltDtVl	:= .T.
+DEFAULT cEnt05		:= Nil
+
+If cArqBase $ "CT1/CT7/CQ0/CQ1"
+	cArqBase := "CT1"
+	dbSelectArea("CQ0")
+	dbSelectArea("CQ1")
+	cTabMes := "CQ0"
+	cTabDia := "CQ1"
+ElseIf cArqBase $ "CTT/CT3/CQ2/CQ3"
+	cArqBase := "CTT"
+	dbSelectArea("CQ2")
+	dbSelectArea("CQ3")
+	cTabMes := "CQ2"
+	cTabDia := "CQ3"
+ElseIf cArqBase $ "CTD/CT4/CQ4/CQ5"
+	cArqBase := "CTD"
+	dbSelectArea("CQ4")
+	dbSelectArea("CQ5")
+	cTabMes := "CQ4"
+	cTabDia := "CQ5"
+ElseIf cArqBase $ "CTH/CTI/CQ6/CQ7"
+	cArqBase := "CTH"
+	dbSelectArea("CQ6")
+	dbSelectArea("CQ7")
+	cTabMes := "CQ6"
+	cTabDia := "CQ7"
+	
+ElseIf cArqBase  $ "CTU/CQ8/CQ9"
+	dbSelectArea("CQ7")
+	dbSelectArea("CQ8")
+	cTabMes := "CQ8"
+	cTabDia := "CQ9"
+	cArqBase := "CTU"
+	If cIdent $ "CTT/CT3"
+		cIdent := "CTT"
+		cCodigo := cCCusto
+	ElseIf cIdent $ "CTD/CT4"
+		cIdent := "CTD"
+		cCodigo := cItem
+	ElseIf cIdent $ "CTH/CTI"
+		cIdent := "CTH"
+		cCodigo := cClasse
+	ElseIf lEntidad05 .And. cIdent $ "CV0/QL6/QL7"
+		cIdent := "CV0"
+		cCodigo := Left( cEnt05 , Len(CQ8->CQ8_CODIGO) )
+	EndIf
+ElseIf lEntidad05 .And. cArqBase $ "CV0/QL6/QL7"
+	cArqBase := "CV0"
+	If cEnt05 != Nil
+		cEnt05 := Left( cEnt05 , Len(QL6->QL6_ENT05) )
+	EndIf
+	dbSelectArea("QL6")
+	dbSelectArea("QL7")
+	cTabMes := "QL6"
+	cTabDia := "QL7"
+EndIf
+
+//Tratativa para o filtro de filiais
+If cFilEsp == nil .Or. Empty( cFilEsp ) .Or. ValType(cFilEsp) <> "C"
+	cFilEsp	:= xFilial( cTabMes )
+Else
+	cFilEsp := Alltrim( cFilEsp )
+Endif
+
+cFilMes := " "+cTabMes+"_FILIAL = '" + cFilEsp + "' "
+cFilDia := " "+cTabDia+"_FILIAL = '" + cFilEsp + "' "
+
+If lUltDtVl
+	If lEntidad05
+		dDataNew := GetDtMaxCQ(cArqBase,cConta,cCCusto,cItem,cClasse,cIdent,dData,cMoeda,cTpSald,cFilEsp,,cEnt05)
+	Else
+		dDataNew := GetDtMaxCQ(cArqBase,cConta,cCCusto,cItem,cClasse,cIdent,dData,cMoeda,cTpSald,cFilEsp)
+	EndIf
+Else 
+	dDataNew := dData
+EndIf
+
+//tratamento para tirar changequery
+If cBanco $ "INFORMIX*ORACLE"
+	cNulo := "NVL"
+ElseIf cBanco  $ " DB2*POSTGRES"  .OR. ( TcGetDb() == "DB2/400" .And. Upper(TcSrvType()) == "ISERIES" )
+	cNulo := "COALESCE"
+Else
+	cNulo := "ISNULL"
+EndIf
+If !Empty(dDataNew)
+	If cArqBase != "CTU"
+		If cConta != Nil
+			cCpoTot  +=   ",CONTA " +CRLF
+			cCpoDia  +=   ","+cTabDia+"_CONTA CONTA" +CRLF
+			cCpoMes  +=   ","+cTabMes+"_CONTA CONTA" +CRLF
+			cGrpDia  +=   ","+cTabDia+"_CONTA " +CRLF
+			cGrpMes  +=   ","+cTabMes+"_CONTA " +CRLF
+		EndIf
+		If lEntidad05
+			If  cArqBase $ 'CTT/CTD/CTH/CV0' .And. cCCusto != Nil
+				cCpoTot +=   ",CCUSTO " +CRLF
+				cCpoDia +=   ","+cTabDia+"_CCUSTO CCUSTO " +CRLF
+				cCpoMes +=   ","+cTabMes+"_CCUSTO CCUSTO " +CRLF
+				cGrpDia +=   ","+cTabDia+"_CCUSTO  " +CRLF
+				cGrpMes +=   ","+cTabMes+"_CCUSTO  " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH/CV0' .And. cItem != Nil
+				cCpoTot +=   ",ITEM " +CRLF
+				cCpoDia +=   ","+cTabDia+"_ITEM ITEM " +CRLF
+				cCpoMes +=   ","+cTabMes+"_ITEM ITEM " +CRLF
+				cGrpDia +=   ","+cTabDia+"_ITEM  " +CRLF
+				cGrpMes +=   ","+cTabMes+"_ITEM  " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH/CV0' .And. cItem != Nil
+				cCpoTot +=   ",CLVL " +CRLF
+				cCpoDia +=   ","+cTabDia+"_CLVL CLVL" +CRLF
+				cCpoMes +=   ","+cTabMes+"_CLVL CLVL" +CRLF
+				cGrpDia +=   ","+cTabDia+"_CLVL " +CRLF
+				cGrpMes +=   ","+cTabMes+"_CLVL " +CRLF
+			EndIf
+			If  cArqBase $ 'CV0' .And. cEnt05 != Nil
+				cCpoTot +=   ",ENT05 " +CRLF
+				cCpoDia +=   ","+cTabDia+"_ENT05 ENT05 " +CRLF
+				cCpoMes +=   ","+cTabMes+"_ENT05 ENT05 " +CRLF
+				cGrpDia +=   ","+cTabDia+"_ENT05 " +CRLF
+				cGrpMes +=   ","+cTabMes+"_ENT05 " +CRLF
+			EndIf
+		Else
+			If  cArqBase $ 'CTT/CTD/CTH' .And. cCCusto != Nil
+				cCpoTot +=   ",CCUSTO " +CRLF
+				cCpoDia +=   ","+cTabDia+"_CCUSTO CCUSTO " +CRLF
+				cCpoMes +=   ","+cTabMes+"_CCUSTO CCUSTO " +CRLF
+				cGrpDia +=   ","+cTabDia+"_CCUSTO  " +CRLF
+				cGrpMes +=   ","+cTabMes+"_CCUSTO  " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH' .And. cItem != Nil
+				cCpoTot +=   ",ITEM " +CRLF
+				cCpoDia +=   ","+cTabDia+"_ITEM ITEM " +CRLF
+				cCpoMes +=   ","+cTabMes+"_ITEM ITEM " +CRLF
+				cGrpDia +=   ","+cTabDia+"_ITEM  " +CRLF
+				cGrpMes +=   ","+cTabMes+"_ITEM  " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH' .And. cItem != Nil
+				cCpoTot +=   ",CLVL " +CRLF
+				cCpoDia +=   ","+cTabDia+"_CLVL CLVL" +CRLF
+				cCpoMes +=   ","+cTabMes+"_CLVL CLVL" +CRLF
+				cGrpDia +=   ","+cTabDia+"_CLVL " +CRLF
+				cGrpMes +=   ","+cTabMes+"_CLVL " +CRLF
+			EndIf
+		EndIf
+	Else
+		cCpoTot +=   ",IDENT " +CRLF
+		cCpoTot +=   ",CODIGO " +CRLF
+		cCpoDia +=   ","+cTabDia+"_IDENT IDENT " +CRLF
+		cCpoDia +=   ", "+cTabDia+"_CODIGO CODIGO " +CRLF
+		cCpoMes +=   ","+cTabMes+"_IDENT IDENT " +CRLF
+		cCpoMes +=   ", "+cTabMes+"_CODIGO CODIGO " +CRLF
+		cGrpDia +=   ","+cTabDia+"_IDENT  " +CRLF
+		cGrpDia +=   ", "+cTabDia+"_CODIGO  " +CRLF
+		cGrpMes +=   ","+cTabMes+"_IDENT  " +CRLF
+		cGrpMes +=   ", "+cTabMes+"_CODIGO  " +CRLF
+	EndIf
+	
+	
+	cQuery +=     " SELECT " +CRLF
+	
+	cQuery +=     cNulo +"(SUM(SLDANTDEB),0) SLDANTDEB " +CRLF
+	cQuery +=     " ,"+cNulo+"(SUM(SLDANTCRD),0) SLDANTCRD " +CRLF
+	cQuery +=     " ,"+cNulo+"(SUM(SALDODEB),0) SALDODEB " +CRLF
+	cQuery +=     " ,"+cNulo+"(SUM(SALDOCRD),0) SALDOCRD " +CRLF
+	cQuery +=     " ,"+cNulo+"(SUM(SALDODEBLP),0) SALDODEBLP " +CRLF
+	cQuery +=     " ,"+cNulo+"(SUM(SALDOCRDLP),0) SALDOCRDLP " +CRLF
+	cQuery +=     " ,"+cNulo+"(SUM(SALDODEBATU),0) SALDODEBATU " +CRLF
+	cQuery +=     " ,"+cNulo+"(SUM(SALDOCRDATU),0) SALDOCRDATU " +CRLF
+	cQuery +=     " "+cCpoTot+"  " +CRLF
+	
+	cQuery +=     " FROM    " +CRLF
+	cQuery +=     " ( " +CRLF
+	//		---------------------------- Saldo atual -----------------------------------------------
+	
+	//		--Diário
+	cQuery +=       " SELECT " +CRLF
+	
+	cQuery +=          cNulo+"(SUM("+cTabDia+"_DEBITO),0) SALDODEB " +CRLF
+	cQuery +=          " ,"+cNulo+"(SUM("+cTabDia+"_CREDIT),0) SALDOCRD " +CRLF
+	cQuery +=          " ,0 SLDANTDEB " +CRLF
+	cQuery +=          " ,0 SLDANTCRD  " +CRLF
+	cQuery +=          " ,0 SALDODEBLP " +CRLF
+	cQuery +=          " ,0 SALDOCRDLP " +CRLF
+	cQuery +=          " ,0 SALDODEBATU " +CRLF
+	cQuery +=          " ,0 SALDOCRDATU " +CRLF
+	cQuery +=          " "+cCpoDia+"  " +CRLF
+	
+	cQuery +=      " FROM "+RetSqlName(cTabDia) +CRLF
+	cQuery +=      " WHERE " +CRLF
+	cQuery +=          " D_E_L_E_T_ = ' ' " +CRLF
+	cQuery +=          " AND "+cFilDia+" "+CRLF
+	
+	If cArqBase != "CTU"
+		If cConta != Nil
+			cQuery +=   " AND "+cTabDia+"_CONTA = '"+cConta+"' " +CRLF
+		EndIf
+		If lEntidad05 
+			If  cArqBase $ 'CTT/CTD/CTH/CV0' .And.  cCCusto != Nil
+				cQuery +=   " AND "+cTabDia+"_CCUSTO = '"+cCCusto+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH/CV0'  .And.  cItem != Nil
+				cQuery +=   " AND "+cTabDia+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH/CV0'  .And.  cClasse != Nil
+				cQuery +=   " AND "+cTabDia+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+			If  cArqBase $ 'CV0' .And. cEnt05 != Nil
+				cQuery +=   " AND "+cTabDia+"_ENT05 = '"+cEnt05+"'" +CRLF
+			EndIf
+		Else
+			If  cArqBase $ 'CTT/CTD/CTH' .And.  cCCusto != Nil
+				cQuery +=   " AND "+cTabDia+"_CCUSTO = '"+cCCusto+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH'  .And.  cItem != Nil
+				cQuery +=   " AND "+cTabDia+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH'  .And.  cClasse != Nil
+				cQuery +=   " AND "+cTabDia+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+		EndIf
+	Else
+		cQuery +=   " AND "+cTabDia+"_IDENT = '"+cIdent+"' " +CRLF
+		cQuery +=   " AND "+cTabDia+"_CODIGO = '"+cCodigo+"' " +CRLF
+	EndIf
+	
+	cQuery +=          " AND "+cTabDia+"_MOEDA = '"+cMoeda+"' " +CRLF
+	cQuery +=          " AND "+cTabDia+"_TPSALD = '"+cTpSald+"' " +CRLF
+	cQuery +=          " AND "+cTabDia+"_DATA = '"+DTOS(dDataNew)+"' " +CRLF
+	
+	cQuery +=          " GROUP BY " +CRLF
+	cQuery +=" "+Right(cGrpDia,Len(cGrpDia)-1)+"  " +CRLF
+	
+	
+	//------------------------------------------ Saldo anterior ------------------------------------
+	//------------------------------Mensal----------------------------------
+	cQuery +=       " UNION ALL	 " +CRLF
+	
+	cQuery +=       " SELECT  " +CRLF
+	
+	cQuery +=          " 0 SALDODEB " +CRLF
+	cQuery +=          " ,0 SALDOCRD " +CRLF
+	cQuery +=          " ,"+cNulo+"(SUM("+cTabMes+"_DEBITO),0) SLDANTDEB " +CRLF
+	cQuery +=          " ,"+cNulo+"(SUM("+cTabMes+"_CREDIT),0) SLDANTCRD " +CRLF
+	cQuery +=          " ,0 SALDODEBLP " +CRLF
+	cQuery +=          " ,0 SALDOCRDLP " +CRLF
+	cQuery +=          " ,0 SALDODEBATU " +CRLF
+	cQuery +=          " ,0 SALDOCRDATU " +CRLF
+	cQuery +=          " "+cCpoMes+"  " +CRLF
+	
+	cQuery +=       " FROM " + RetSqlName(cTabMes) +CRLF
+	cQuery +=       " WHERE " +CRLF
+	cQuery +=          " D_E_L_E_T_ = ' ' " +CRLF
+	cQuery +=          " AND "+ cFilMes +CRLF
+	
+	If cArqBase != "CTU"
+		If cConta != Nil
+			cQuery +=   " AND "+cTabMes+"_CONTA = '"+cConta+"' " +CRLF
+		EndIf
+		If lEntidad05
+			If  cArqBase $ 'CTT/CTD/CTH/CV0' .And. cCCusto != Nil
+				cQuery +=   " AND "+cTabMes+"_CCUSTO = '"+cCCusto+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH/CV0' .And. cItem != Nil
+				cQuery +=   " AND "+cTabMes+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH/CV0' .And. cClasse != Nil
+				cQuery +=   " AND "+cTabMes+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+			If  cArqBase $ 'CV0' .And. cEnt05 != Nil
+				cQuery +=   " AND "+cTabMes+"_ENT05 = '"+cEnt05+"'" +CRLF
+			EndIf
+		Else
+			If  cArqBase $ 'CTT/CTD/CTH' .And. cCCusto != Nil
+				cQuery +=   " AND "+cTabMes+"_CCUSTO = '"+cCCusto+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH' .And. cItem != Nil
+				cQuery +=   " AND "+cTabMes+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH' .And. cClasse != Nil
+				cQuery +=   " AND "+cTabMes+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+		EndIf
+	Else
+		cQuery +=   " AND "+cTabMes+"_IDENT = '"+cIdent+"' " +CRLF
+		cQuery +=   " AND "+cTabMes+"_CODIGO = '"+cCodigo+"' " +CRLF
+	EndIf
+	cQuery +=          " AND "+cTabMes+"_MOEDA = '"+cMoeda+"' " +CRLF
+	cQuery +=          " AND "+cTabMes+"_TPSALD = '"+cTpSald+"' " +CRLF
+	cQuery +=          " AND "+cTabMes+"_DATA <= '"+DTOS(FirstDay(dDataNew)-1)+"' " +CRLF
+	
+	cQuery +=          " GROUP BY " +CRLF
+	
+	cQuery +=" "+Right(cGrpMes,Len(cGrpMes)-1)+"  " +CRLF
+	
+	//-------------------------Diario --------------------------------------
+	cQuery +=   " UNION ALL " +CRLF
+	
+	cQuery +=       " SELECT " +CRLF
+	
+	cQuery +=          " 0 SALDODEB " +CRLF
+	cQuery +=          " ,0 SALDOCRD " +CRLF
+	cQuery +=          " ,"+cNulo+"(SUM("+cTabDia+"_DEBITO),0) SLDANTDEB " +CRLF
+	cQuery +=          " ,"+cNulo+"(SUM("+cTabDia+"_CREDIT),0) SLDANTCRD  " +CRLF
+	cQuery +=          " ,0 SALDODEBLP " +CRLF
+	cQuery +=          " ,0 SALDOCRDLP " +CRLF
+	cQuery +=          " ,0 SALDODEBATU " +CRLF
+	cQuery +=          " ,0 SALDOCRDATU " +CRLF
+	cQuery +=          " "+cCpoDia+"  " +CRLF
+	
+	cQuery +=      " FROM "+RetSqlName(cTabDia) +CRLF
+	cQuery +=      " WHERE " +CRLF
+	
+	cQuery +=          " D_E_L_E_T_ = ' ' " +CRLF
+	cQuery +=          " AND "+cFilDia+" "+CRLF
+	
+	If cArqBase != "CTU"
+		If cConta != Nil
+			cQuery +=   " AND "+cTabDia+"_CONTA = '"+cConta+"' " +CRLF
+		EndIf
+		If lEntidad05
+			If  cArqBase $ 'CTT/CTD/CTH/CV0' .And. cCCusto != Nil
+				cQuery +=   " AND "+cTabDia+"_CCUSTO = '"+cCCusto+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH/CV0' .And. cItem != Nil
+				cQuery +=   " AND "+cTabDia+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH/CV0' .And. cClasse != Nil
+				cQuery +=   " AND "+cTabDia+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+			If  cArqBase $ 'CV0' .And. cEnt05 != Nil
+				cQuery +=   " AND "+cTabDia+"_ENT05 = '"+cEnt05+"'" +CRLF
+			EndIf
+		Else
+			If  cArqBase $ 'CTT/CTD/CTH' .And. cCCusto != Nil
+				cQuery +=   " AND "+cTabDia+"_CCUSTO = '"+cCCusto+"' " +CRLF
+				
+			EndIf
+			If  cArqBase $ 'CTD/CTH' .And. cItem != Nil
+				cQuery +=   " AND "+cTabDia+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH' .And. cClasse != Nil
+				cQuery +=   " AND "+cTabDia+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+		EndIf
+	Else
+		cQuery +=   " AND "+cTabDia+"_IDENT = '"+cIdent+"' " +CRLF
+		cQuery +=   " AND "+cTabDia+"_CODIGO = '"+cCodigo+"' " +CRLF
+	EndIf
+	
+	cQuery +=          " AND "+cTabDia+"_MOEDA = '"+cMoeda+"' " +CRLF
+	cQuery +=          " AND "+cTabDia+"_TPSALD = '"+cTpSald+"' " +CRLF
+	
+	cQuery +=          " AND "+cTabDia+"_DATA >= '"+DTOS(FirstDay(dDataNew))+"' " +CRLF
+	cQuery +=          " AND "+cTabDia+"_DATA < '"+DTOS(dDataNew)+"' " +CRLF
+	
+	cQuery +=          " GROUP BY " +CRLF
+	
+	cQuery +=" "+Right(cGrpDia,Len(cGrpDia)-1)+"  " +CRLF
+	//---------------------Saldo Antes Lucros e Perdas ---------------------------------------
+	If lImpAntLP
+		
+		cQuery +=          " UNION ALL  " +CRLF
+		
+		cQuery +=          " SELECT  " +CRLF
+		cQuery +=          "  0 SALDODEB " +CRLF
+		cQuery +=          " ,0 SALDOCRD " +CRLF
+		cQuery +=          " ,0 SLDANTDEB " +CRLF
+		cQuery +=          " ,0 SLDANTCRD " +CRLF
+		cQuery +=          " ,"+cNulo+"(SUM("+cTabMes+"_DEBITO),0) SALDODEBLP " +CRLF
+		cQuery +=          " ,"+cNulo+"(SUM("+cTabMes+"_CREDIT),0) SALDOCRDLP " +CRLF
+		cQuery +=          " ,0 SALDODEBATU " +CRLF
+		cQuery +=          " ,0 SALDOCRDATU " +CRLF
+		cQuery +=          " "+cCpoMes+"  " +CRLF
+		
+		cQuery +=          " FROM  " +RetSqlName(cTabMes) +CRLF
+		cQuery +=          " WHERE  " +CRLF
+		cQuery +=          " D_E_L_E_T_ = ' '  " +CRLF
+		cQuery +=           " AND "+cFilMes+" "+CRLF
+		If cArqBase != "CTU"
+			If cConta != Nil
+				cQuery +=   " AND "+cTabMes+"_CONTA = '"+cConta+"' " +CRLF
+			EndIf
+			If lEntidad05
+				If  cArqBase $ 'CTT/CTD/CTH/CV0' .And. cCCusto != Nil
+					cQuery +=   " AND "+cTabMes+"_CCUSTO = '"+cCCusto+"' " +CRLF
+				EndIf
+				If  cArqBase $ 'CTD/CTH/CV0' .And. cItem != Nil
+					cQuery +=   " AND "+cTabMes+"_ITEM = '"+cItem+"' " +CRLF
+				EndIf
+				If  cArqBase $ 'CTH/CV0' .And. cClasse != Nil
+					cQuery +=   " AND "+cTabMes+"_CLVL = '"+cClasse+"'" +CRLF
+				EndIf
+				If  cArqBase $ 'CV0' .And. cEnt05 != Nil
+					cQuery +=   " AND "+cTabMes+"_ENT05 = '"+cEnt05+"'" +CRLF
+				EndIf
+			Else
+				If  cArqBase $ 'CTT/CTD/CTH' .And. cCCusto != Nil
+					cQuery +=   " AND "+cTabMes+"_CCUSTO = '"+cCCusto+"' " +CRLF
+				EndIf
+				If  cArqBase $ 'CTD/CTH' .And. cItem != Nil
+					cQuery +=   " AND "+cTabMes+"_ITEM = '"+cItem+"' " +CRLF
+				EndIf
+				If  cArqBase $ 'CTH' .And. cClasse != Nil
+					cQuery +=   " AND "+cTabMes+"_CLVL = '"+cClasse+"'" +CRLF
+				EndIf
+			EndIf
+		Else
+			cQuery +=   " AND "+cTabMes+"_IDENT = '"+cIdent+"' " +CRLF
+			cQuery +=   " AND "+cTabMes+"_CODIGO = '"+cCodigo+"' " +CRLF
+		EndIf
+		cQuery +=          " AND "+cTabMes+"_MOEDA = '"+cMoeda+"' " +CRLF
+		cQuery +=          " AND "+cTabMes+"_TPSALD = '"+cTpSald+"' " +CRLF
+		
+		cQuery +=          " AND "+cTabMes+"_DATA <= '"+DTOS(FirstDay(dDataNew)-1)+"'  " +CRLF
+		cQuery +=          " AND "+cTabMes+"_LP    = 'Z'   " +CRLF
+		cQuery +=          " AND "+cTabMes+"_DTLP  = '"+DTOS(dDataLP)+"' " +CRLF
+		
+		cQuery +=          " GROUP BY  " +CRLF
+		
+		cQuery +=" "+Right(cGrpMes,Len(cGrpMes)-1)+"  " +CRLF
+		
+		cQuery +=          " UNION ALL  " +CRLF
+		cQuery +=          " SELECT  " +CRLF
+		
+		cQuery +=          " 0 SALDODEB  " +CRLF
+		cQuery +=          " ,0 SALDOCRD  " +CRLF
+		cQuery +=          " ,0 SLDANTDEB  " +CRLF
+		cQuery +=          " ,0 SLDANTCRD  " +CRLF
+		cQuery +=          " ,"+cNulo+"(SUM("+cTabDia+"_DEBITO),0) SALDODEBLP  " +CRLF
+		cQuery +=          " ,"+cNulo+"(SUM("+cTabDia+"_CREDIT),0) SALDOCRDLP  " +CRLF
+		cQuery +=          " ,0 SALDODEBATU " +CRLF
+		cQuery +=          " ,0 SALDOCRDATU " +CRLF
+		cQuery +=          " "+cCpoDia+"  " +CRLF
+		
+		cQuery +=          " FROM "+RetSqlName(cTabDia) +CRLF
+		cQuery +=          " WHERE  " +CRLF
+		cQuery +=          " D_E_L_E_T_ = ' '  " +CRLF
+		cQuery +=           " AND "+cFilDia+" "+CRLF
+		If cArqBase != "CTU"
+			If cConta != Nil
+				cQuery +=   " AND "+cTabDia+"_CONTA = '"+cConta+"' " +CRLF
+			EndIf
+			If lEntidad05
+				If  cArqBase $ 'CTT/CTD/CTH/CV0' .And. cCCusto != Nil
+					cQuery +=   " AND "+cTabDia+"_CCUSTO = '"+cCCusto+"' " +CRLF
+				EndIf
+				If  cArqBase $ 'CTD/CTH/CV0' .And. cItem != Nil
+					cQuery +=   " AND "+cTabDia+"_ITEM = '"+cItem+"' " +CRLF
+				EndIf
+				If  cArqBase $ 'CTH/CV0' .And. cClasse != Nil
+					cQuery +=   " AND "+cTabDia+"_CLVL = '"+cClasse+"'" +CRLF
+				EndIf
+				If  cArqBase $ 'CV0' .And. cEnt05 != Nil
+					cQuery +=   " AND "+cTabDia+"_ENT05 = '"+cEnt05+"'" +CRLF
+				EndIf
+			Else
+				If  cArqBase $ 'CTT/CTD/CTH' .And. cCCusto != Nil
+					cQuery +=   " AND "+cTabDia+"_CCUSTO = '"+cCCusto+"' " +CRLF
+				EndIf
+				If  cArqBase $ 'CTD/CTH' .And. cItem != Nil
+					cQuery +=   " AND "+cTabDia+"_ITEM = '"+cItem+"' " +CRLF
+				EndIf
+				If  cArqBase $ 'CTH' .And. cClasse != Nil
+					cQuery +=   " AND "+cTabDia+"_CLVL = '"+cClasse+"'" +CRLF
+				EndIf
+			EndIf
+		Else
+			cQuery +=   " AND "+cTabDia+"_IDENT = '"+cIdent+"' " +CRLF
+			cQuery +=   " AND "+cTabDia+"_CODIGO = '"+cCodigo+"' " +CRLF
+		EndIf
+		cQuery +=          " AND "+cTabDia+"_MOEDA = '"+cMoeda+"' " +CRLF
+		cQuery +=          " AND "+cTabDia+"_TPSALD = '"+cTpSald+"' " +CRLF
+		
+		cQuery +=          " AND "+cTabDia+"_DATA >= '"+DTOS(FirstDay(dDataNew))+"'  " +CRLF
+		cQuery +=          " AND "+cTabDia+"_DATA <= '"+DTOS(dDataNew)+"' " +CRLF
+		cQuery +=          " AND "+cTabDia+"_LP    = 'Z'   " +CRLF
+		cQuery +=          " AND "+cTabDia+"_DTLP  = '"+DTOS(dDataLP)+"'  " +CRLF
+		
+		cQuery +=          " GROUP BY  " +CRLF
+		cQuery +=" "+Right(cGrpDia,Len(cGrpDia)-1)+"  " +CRLF
+	EndIf
+
+	//------------------------------------------ Saldo Atual ------------------------------------
+	//------------------------------Mensal----------------------------------
+	cQuery +=       " UNION ALL	 " +CRLF
+	
+	cQuery +=       " SELECT  " +CRLF
+	
+	cQuery +=          " 0 SALDODEB " +CRLF
+	cQuery +=          " ,0 SALDOCRD " +CRLF
+	cQuery +=          " ,0 SLDANTDEB " +CRLF
+	cQuery +=          " ,0 SLDANTCRD " +CRLF
+	cQuery +=          " ,0 SALDODEBLP " +CRLF
+	cQuery +=          " ,0 SALDOCRDLP " +CRLF
+	cQuery +=          " ,"+cNulo+"(SUM("+cTabMes+"_DEBITO),0) SALDODEBATU " +CRLF
+	cQuery +=          " ,"+cNulo+"(SUM("+cTabMes+"_CREDIT),0) SALDOCRDATU " +CRLF
+	cQuery +=          " "+cCpoMes+"  " +CRLF
+	
+	cQuery +=       " FROM " + RetSqlName(cTabMes) +CRLF
+	cQuery +=       " WHERE " +CRLF
+	cQuery +=          " D_E_L_E_T_ = ' ' " +CRLF
+	cQuery +=          " AND "+ cFilMes +CRLF
+	
+	If cArqBase != "CTU"
+		If cConta != Nil
+			cQuery +=   " AND "+cTabMes+"_CONTA = '"+cConta+"' " +CRLF
+		EndIf
+		If lEntidad05
+			If  cArqBase $ 'CTT/CTD/CTH/CV0' .And. cCCusto != Nil
+				cQuery +=   " AND "+cTabMes+"_CCUSTO = '"+cCCusto+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH/CV0' .And. cItem != Nil
+				cQuery +=   " AND "+cTabMes+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH/CV0' .And. cClasse != Nil
+				cQuery +=   " AND "+cTabMes+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+			If  cArqBase $ 'CV0' .And. cEnt05 != Nil
+				cQuery +=   " AND "+cTabMes+"_ENT05 = '"+cEnt05+"'" +CRLF
+			EndIf
+		Else
+			If  cArqBase $ 'CTT/CTD/CTH' .And. cCCusto != Nil
+				cQuery +=   " AND "+cTabMes+"_CCUSTO = '"+cCCusto+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH' .And. cItem != Nil
+				cQuery +=   " AND "+cTabMes+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH' .And. cClasse != Nil
+				cQuery +=   " AND "+cTabMes+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+		EndIf
+	Else
+		cQuery +=   " AND "+cTabMes+"_IDENT = '"+cIdent+"' " +CRLF
+		cQuery +=   " AND "+cTabMes+"_CODIGO = '"+cCodigo+"' " +CRLF
+	EndIf
+	cQuery +=          " AND "+cTabMes+"_MOEDA = '"+cMoeda+"' " +CRLF
+	cQuery +=          " AND "+cTabMes+"_TPSALD = '"+cTpSald+"' " +CRLF
+	cQuery +=          " AND "+cTabMes+"_DATA <= '"+DTOS(FirstDay(dDataNew)-1)+"' " +CRLF
+	
+	cQuery +=          " GROUP BY " +CRLF
+	
+	cQuery +=" "+Right(cGrpMes,Len(cGrpMes)-1)+"  " +CRLF
+	
+	//-------------------------Diario --------------------------------------
+	cQuery +=   " UNION ALL " +CRLF
+	
+	cQuery +=       " SELECT " +CRLF
+	
+	cQuery +=          " 0 SALDODEB " +CRLF
+	cQuery +=          " ,0 SALDOCRD " +CRLF
+	cQuery +=          " ,0 SLDANTDEB " +CRLF
+	cQuery +=          " ,0 SLDANTCRD " +CRLF
+	cQuery +=          " ,0 SALDODEBLP " +CRLF
+	cQuery +=          " ,0 SALDOCRDLP " +CRLF
+	cQuery +=          " ,"+cNulo+"(SUM("+cTabDia+"_DEBITO),0) SALDODEBATU " +CRLF
+	cQuery +=          " ,"+cNulo+"(SUM("+cTabDia+"_CREDIT),0) SALDOCRDATU " +CRLF
+	cQuery +=          " "+cCpoDia+"  " +CRLF
+	
+	cQuery +=      " FROM "+RetSqlName(cTabDia) +CRLF
+	cQuery +=      " WHERE " +CRLF
+	
+	cQuery +=          " D_E_L_E_T_ = ' ' " +CRLF
+	cQuery +=          " AND "+cFilDia+" "+CRLF
+	
+	If cArqBase != "CTU"
+		If cConta != Nil
+			cQuery +=   " AND "+cTabDia+"_CONTA = '"+cConta+"' " +CRLF
+		EndIf
+		If lEntidad05
+			If  cArqBase $ 'CTT/CTD/CTH/CV0' .And. cCCusto != Nil
+				cQuery +=   " AND "+cTabDia+"_CCUSTO = '"+cCCusto+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH/CV0' .And. cItem != Nil
+				cQuery +=   " AND "+cTabDia+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH/CV0' .And. cClasse != Nil
+				cQuery +=   " AND "+cTabDia+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+			If  cArqBase $ 'CV0' .And. cEnt05 != Nil
+				cQuery +=   " AND "+cTabDia+"_ENT05 = '"+cEnt05+"'" +CRLF
+			EndIf
+		Else
+			If  cArqBase $ 'CTT/CTD/CTH' .And. cCCusto != Nil
+				cQuery +=   " AND "+cTabDia+"_CCUSTO = '"+cCCusto+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTD/CTH' .And. cItem != Nil
+				cQuery +=   " AND "+cTabDia+"_ITEM = '"+cItem+"' " +CRLF
+			EndIf
+			If  cArqBase $ 'CTH' .And. cClasse != Nil
+				cQuery +=   " AND "+cTabDia+"_CLVL = '"+cClasse+"'" +CRLF
+			EndIf
+		EndIf
+	Else
+		cQuery +=   " AND "+cTabDia+"_IDENT = '"+cIdent+"' " +CRLF
+		cQuery +=   " AND "+cTabDia+"_CODIGO = '"+cCodigo+"' " +CRLF
+	EndIf
+	
+	cQuery +=          " AND "+cTabDia+"_MOEDA = '"+cMoeda+"' " +CRLF
+	cQuery +=          " AND "+cTabDia+"_TPSALD = '"+cTpSald+"' " +CRLF
+	
+	cQuery +=          " AND "+cTabDia+"_DATA >= '"+DTOS(FirstDay(dDataNew))+"' " +CRLF
+	cQuery +=          " AND "+cTabDia+"_DATA <= '"+DTOS(dDataNew)+"' " +CRLF
+	
+	cQuery +=          " GROUP BY " +CRLF
+	
+	cQuery +=" "+Right(cGrpDia,Len(cGrpDia)-1)+"  " +CRLF
+
+	
+	
+	cQuery +="		) SALDO " +CRLF
+	cQuery +="	  GROUP BY " +CRLF
+	
+	cQuery +=" "+Right(cCpoTot,Len(cCpoTot)-1)+"  " +CRLF
+	
+	cQuery +=" ORDER BY " +CRLF
+	
+	cQuery +=" "+Right(cCpoTot,Len(cCpoTot)-1)+"  " +CRLF
+	
+	If Select(cTRB) > 0
+		dbSelectArea(cTRB)
+		(cTRB)->(dbCloseArea())
+	Endif
+	
+	dbUseArea(.T.,"TOPCONN",TcGenQry(,,cQuery),cTRB,.T.,.F.)
+	
+	TcSetField(cTRB,"SLDANTDEB"  ,"N",aTamVlr[1],aTamVlr[2])
+	TcSetField(cTRB,"SLDANTCRD"  ,"N",aTamVlr[1],aTamVlr[2])
+	TcSetField(cTRB,"SALDODEB"  ,"N",aTamVlr[1],aTamVlr[2])
+	TcSetField(cTRB,"SALDOCRD"  ,"N",aTamVlr[1],aTamVlr[2])
+	TcSetField(cTRB,"SALDODEBLP"  ,"N",aTamVlr[1],aTamVlr[2])
+	TcSetField(cTRB,"SALDOCRDLP"  ,"N",aTamVlr[1],aTamVlr[2])
+	TcSetField(cTRB,"SALDODEBATU"  ,"N",aTamVlr[1],aTamVlr[2])
+	TcSetField(cTRB,"SALDOCRDATU"  ,"N",aTamVlr[1],aTamVlr[2])
+	
+	If (cTRB)->(!EOF())
+		
+		lAchouNoDia := dDataNew == dData
+		
+		nAtuDeb		:= (cTRB)->SALDODEBATU
+		nAtuCrd		:= (cTRB)->SALDOCRDATU
+		nDebLP			:= (cTRB)->SALDODEBLP
+		nCrdLP			:= (cTRB)->SALDOCRDLP
+		
+		IF lAchouNoDia						//Se achou saldo na data solicitada
+			nAntDeb		:= (cTRB)->SLDANTDEB
+			nAntCrd		:= (cTRB)->SLDANTCRD
+			nDebito		:= (cTRB)->SALDODEB
+			nCredito		:= (cTRB)->SALDOCRD
+		Else
+			nAntDeb		:= nAtuDeb 	
+			nAntCrd		:= nAtuCrd  
+		EndIf
+				
+		If lImpAntLP
+			nAntDeb -= nDebLP
+			nAntCrd -= nCrdLP
+			nAtuDeb -= nDebLP
+			nAtuCrd -= nCrdLP
+		EndIf
+
+		nSaldoAnt		:= nAntCrd - nAntDeb 
+		nSaldoAtu		:= nAtuCrd - nAtuDeb
+	EndIf
+	
+EndIf
+
+If Select(cTRB) > 0
+	dbSelectArea(cTRB)
+	(cTRB)->(dbCloseArea())
+Endif
+
+RestArea(aArea)
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Retorno:                                             ³
+//³ [1] Saldo Atual (com sinal)                          ³
+//³ [2] Debito na Data                                   ³
+//³ [3] Credito na Data                                  ³
+//³ [4] Saldo Atual Devedor                              ³
+//³ [5] Saldo Atual Credor                               ³
+//³ [6] Saldo Anterior (com sinal)                       ³
+//³ [7] Saldo Anterior Devedor                           ³
+//³ [8] Saldo Anterior Credor                            ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+//      [1]       [2]     [3]      [4]     [5]     [6]       [7]     [8]
+Return {nSaldoAtu,nDebito,nCredito,nAtuDeb,nAtuCrd,nSaldoAnt,nAntDeb,nAntCrd}

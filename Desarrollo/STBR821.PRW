@@ -945,7 +945,7 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 
 				oSection3:Cell("CTRANSP"):SetValue( { || Iif(nLinReport == 11,  STR0037, STR0037)}) //"Transporte"
 				//oSection3:Cell("CSLDATU"):SetBlock( { || ValorCTB(nSldTransp,,,TAM_VALOR-2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,,,,,,lPrintZero,.F.) })
-				oSection3:Cell("CSLDATU"):SetBlock( { || ValorCTB(nSldTransp,,,TAM_VALOR-2,nDecimais,.F.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) })  // MH
+				oSection3:Cell("CSLDATU"):SetBlock( { || ValorCTB(nSldTransp,,,TAM_VALOR-2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) })  // MH
 
 				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 				//³Inicio de Impresion de 1a SECCION³
@@ -1077,7 +1077,7 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 						Endif
 
 						//oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR-2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,,,,,,lPrintZero,.F.) } )
-						oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR-2,nDecimais,.F.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) } )  //MH
+						oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR-2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) } )  //MH
 						nLin := 1
 						oSection2:PrintLine()
 
@@ -1105,7 +1105,7 @@ Static Function CTBR821Rep(oReport,aCtbMoeda,aSetOfBook,cPicture,cDescMoeda,nDec
 						nSaldoAtu	:= nSaldoAtu - nVlrDeb + nVlrCrd
 						oSection2:Cell("CLANCDEB"):SetBlock( { || ValorCTB(nVlrDeb,,,TAM_VALOR,nDecimais,.F.,cPicture,"1",,,,,,lPrintZero,.F.) })// Debito
 						oSection2:Cell("CLANCCRD"):SetBlock( { || ValorCTB(nVlrCrd,,,TAM_VALOR,nDecimais,.F.,cPicture,"2",,,,,,lPrintZero,.F.) })// Credito
-						oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.F.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) })// Senala saldo actual => Consulta Razon  // MH
+						oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,cArqTmp->CONTA,,,,,lPrintZero,.F.) })// Senala saldo actual => Consulta Razon  // MH
 						//oSection2:Cell("CTPSLDATU"):SetBlock( { || ValorCTB(nSaldoAtu,,,TAM_VALOR+2,nDecimais,.T.,cPicture,cArqTmp->NORMAL,,,,,,lPrintZero,.F.) })// Senala saldo actual => Consulta Razon
 
 						//	Imprime Section(1) - Resumida.
